@@ -16,9 +16,9 @@ app.get("/home",(req,res)=>{
 app.get("/",(req,res)=>{
     res.send({msg: "Hello"})
 });
-app.get("/api/users",(req,res)=>{
-    res.send(users);
-});
+// app.get("/api/users",(req,res)=>{
+//     res.send(users);
+// });
 app.get("/api/users/:id",(req,res)=>{
     console.log(req.params);
     const id = parseInt(req.params.id);
@@ -30,4 +30,14 @@ app.get("/api/users/:id",(req,res)=>{
         return res.send(user);
     }
     return res.status(404).send("User Not Found");
+})
+app.get("/api/users",(req,res)=>{
+    const {filter, value} = req.query;
+    console.log(filter,value);
+    let filtered = users;
+    if(filter && value){
+        return res.send(filtered.filter((user)=>user[filter].toLowerCase().includes(value.toLowerCase())));
+    }
+    res.send(users);
+    
 })
