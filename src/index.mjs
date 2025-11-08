@@ -39,5 +39,37 @@ app.get("/api/users",(req,res)=>{
         return res.send(filtered.filter((user)=>user[filter].toLowerCase().includes(value.toLowerCase())));
     }
     res.send(users);
-    
+})
+app.use(express.json())
+app.post("/api/users",(req,res)=>{
+    const {body} = req;
+    const newUser = {id:users[users.length-1].id+1, ...body};
+    users.push(newUser);
+    return res.status(200).send(users);
+})
+app.put("/api/users/:id",(req,res)=>{
+    const id = parseInt(req.params.id);
+    if(isNaN(id)){
+        return res.status(400).send({msg: "Invalid"})
+    }
+    const {body} = req;
+    const userIndex = users.findIndex((user)=>user.id==id);
+    if(userIndex===-1){
+        return res.status(400).send({msg: "error! enter valid id"})
+    }
+    users[userIndex] = {id: id, ...body};
+    return res.status(201).send(users);
+})
+app.patch("/api/users/:id",(req,res)=>{
+    const id = parseInt(req.params.id);
+    if(isNaN(id)){
+        return res.status(400).send({msg: "Invalid"})
+    }
+    const {body} = req;
+    const userIndex = users.findIndex((user)=>user.id==id);
+    if(userIndex===-1){
+        return res.status(400).send({msg: "error! enter valid id"});
+    }
+    users[userIndex] = {...users[userIndex], ...body};
+    res.sendStatus(200);
 })
