@@ -19,9 +19,9 @@ app.get("/home",(req,res)=>{
 app.get("/",(req,res)=>{
     res.send({msg: "Hello"})
 });
-// app.get("/api/users",(req,res)=>{
-//     res.send(users);
-// });
+app.get("/api/users",(req,res)=>{
+    res.send(users);
+});
 app.get("/api/users/:id",(req,res)=>{
     console.log(req.params);
     const id = parseInt(req.params.id);
