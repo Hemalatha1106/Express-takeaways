@@ -1,6 +1,9 @@
 import express from "express";
+import { CreateUserValidationSchema }  from "./utils/validationSchemas.mjs";
+import { validationResult, matchedData, checkSchema} from "express-validator";
 const app = express();
 const PORT = 3000;
+app.use(express.json());
 const users = [{id:1, user_name:"Hemalatha"},
     {id:2, user_name:"Sarasijaa"},
     {id:3, user_name:"Venkatesan"},
@@ -40,13 +43,25 @@ app.get("/api/users",(req,res)=>{
     }
     res.send(users);
 })
-app.use(express.json())
-app.post("/api/users",(req,res)=>{
-    const {body} = req;
-    const newUser = {id:users[users.length-1].id+1, ...body};
-    users.push(newUser);
-    return res.status(200).send(users);
-})
+app.post("/test", (req, res) => {
+  console.log("✅ Inside /test route");
+  console.log(req.body);
+  res.send("Test route reached!");
+});
+app.post("/api/users", checkSchema(CreateUserValidationSchema), (req, res) => {
+  console.log("➡️ Inside POST /api/users route");
+  const result = validationResult(req);
+  console.log(result.array());
+    
+//   if (!result.isEmpty()) {
+//     return res.status(400).json({ errors: result.array() });
+//   }
+
+  const { body } = req;
+  const newUser = { id: users[users.length - 1].id + 1, ...body };
+  users.push(newUser);
+  return res.status(200).send(users);
+});
 app.put("/api/users/:id",(req,res)=>{
     const id = parseInt(req.params.id);
     if(isNaN(id)){
